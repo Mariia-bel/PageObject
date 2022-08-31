@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -74,6 +76,19 @@ public class PageObjectTest {
         moneyTransferPage.moneyTransfer(amount, DataHelper.get1CardInfo().getCardNumber());
         Assertions.assertEquals(dashboardPage.getCardBalance(0), balance1BeforeTransfer);
 
+    }
+    @Test
+    void shouldNotRefillMoreBalance(){
+        var loginPage = new LoginPage();
+        var authInfo = DataHelper.getAuthInfo();
+        var verificationPage = loginPage.validLogin(authInfo);
+        var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
+        var dashboardPage = verificationPage.validVerify(verificationCode);
+        int balance1BeforeTransfer = dashboardPage.getCardBalance(0);
+        var moneyTransferPage = dashboardPage.refillSum(1);
+        int amount = 30000;
+        moneyTransferPage.moneyTransfer(balance1BeforeTransfer + amount, DataHelper.get1CardInfo().getCardNumber());
+        $(".notification__content").shouldBe(visible);
     }
 
 
