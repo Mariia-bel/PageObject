@@ -60,4 +60,22 @@ public class PageObjectTest {
         Assertions.assertEquals(dashboardPage.getCardBalance(1), balance2BeforeTransfer + amount);
     }
 
+    @Test
+    void shouldNotRefill1To1(){// пополнение 1й карты с 1й карты пройти не должно
+        var loginPage = new LoginPage();
+        var authInfo = DataHelper.getAuthInfo();
+        var verificationPage = loginPage.validLogin(authInfo);
+        var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
+        var dashboardPage = verificationPage.validVerify(verificationCode);
+        int balance1BeforeTransfer = dashboardPage.getCardBalance(0);
+        int balance2BeforeTransfer = dashboardPage.getCardBalance(1);
+        var moneyTransferPage = dashboardPage.refillSum(0);
+        int amount = 2300;
+        moneyTransferPage.moneyTransfer(amount, DataHelper.get1CardInfo().getCardNumber());
+        Assertions.assertEquals(dashboardPage.getCardBalance(0), balance1BeforeTransfer);
+
+    }
+
+
+
 }
