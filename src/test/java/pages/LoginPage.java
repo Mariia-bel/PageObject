@@ -1,8 +1,7 @@
-package Pages;
+package pages;
 
 import com.codeborne.selenide.SelenideElement;
 import data.DataHelper;
-import org.openqa.selenium.support.FindBy;
 
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.page;

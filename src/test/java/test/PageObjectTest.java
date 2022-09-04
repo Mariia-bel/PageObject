@@ -1,13 +1,12 @@
 package test;
 
-import Pages.DashboardPage;
-import Pages.LoginPage;
-import Pages.TransferPage;
+import pages.LoginPage;
 import com.codeborne.selenide.Configuration;
 import data.DataHelper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pages.TransferPage;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
@@ -79,16 +78,19 @@ public class PageObjectTest {
     }
     @Test
     void shouldNotRefillMoreBalance(){
-        var loginPage = new LoginPage();
-        var authInfo = DataHelper.getAuthInfo();
-        var verificationPage = loginPage.validLogin(authInfo);
-        var verificationCode = DataHelper.getVerificationCodeFor(authInfo);
-        var dashboardPage = verificationPage.validVerify(verificationCode);
-        int balance1BeforeTransfer = dashboardPage.getCardBalance(0);
-        var moneyTransferPage = dashboardPage.refillSum(1);
-        int amount = 30000;
-        moneyTransferPage.moneyTransfer(balance1BeforeTransfer + amount, DataHelper.get1CardInfo().getCardNumber());
-        $(".notification__content").shouldBe(visible);
+        var loginPage = new LoginPage(); //создаем страницу
+        var authInfo = DataHelper.getAuthInfo();//передаем данные о пользователе
+        var verificationPage = loginPage.validLogin(authInfo);//проверяем правильность данных
+        var verificationCode = DataHelper.getVerificationCodeFor(authInfo);//передаем код
+        var dashboardPage = verificationPage.validVerify(verificationCode);//проверяем правильность кода
+        //перешли на страницу с картами
+        int balance1BeforeTransfer = dashboardPage.getCardBalance(0);//получаем баланс 1 карты до пополнения
+        int balance2BeforeTransfer = dashboardPage.getCardBalance(1);//получаем баланс 2 карты до пополнения
+        var moneyTransferPage = dashboardPage.refillSum(0); //Выбираем карту для пополнения
+        int amount = 30000; // сумма перевода
+        moneyTransferPage.moneyTransfer(amount, DataHelper.get2CardInfo().getCardNumber()); //передаем сумму, данные по карте
+        moneyTransferPage.errorNotification();
+
     }
 
 
